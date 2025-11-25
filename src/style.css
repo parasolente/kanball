@@ -1,0 +1,920 @@
+:root {
+    /* --- COLORES DIFERENCIADOS --- */
+    --color-box-lines: #333333;
+    /* Gris medio para las líneas de las cajas (fondo) */
+    --color-stroke-elements: #333333;
+    /* Gris oscuro para bolas y modal (elementos activos) */
+
+    /* --- GROSORES --- */
+    --stroke-width: 1.5px;
+    /* Reducido para igualar visualmente */
+    --ball-stroke-width: 1.5px;
+    /* Reducido a 1.5px */
+
+    --color-yellow: #FDD835;
+    --color-red: #EF5350;
+    --color-green: #55D072;
+    --bg-color: #ffffff;
+
+    /* --- VARIABLES DEL MODAL --- */
+    --modal-border-color: var(--color-stroke-elements);
+    /* Usa el color oscuro */
+    --modal-border-width: 2px;
+    /* Forzamos 2px para el modal */
+    --modal-radius: 12px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    /* Eliminado padding para que el header toque los bordes */
+    background-color: #FFFFFF;
+    /* Cambiado a blanco puro */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Centrado vertical */
+    padding-top: 50px;
+    /* Espacio para el header fijo */
+    min-height: 100vh;
+    box-sizing: border-box;
+    /* Para que el padding no aumente el alto total */
+    user-select: none;
+}
+
+.dashboard {
+    display: flex;
+    width: 95%;
+    max-width: 1320px;
+    /* 10% más grande (1200 * 1.1) */
+    aspect-ratio: 16/9;
+    background-color: #ffffff;
+    box-shadow: none;
+    position: relative;
+    z-index: 1;
+    /* margin-top eliminado, controlado por body padding y centering */
+}
+
+/* --- COLUMNAS --- */
+.column {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    overflow: visible;
+}
+
+.column+.column {
+    margin-left: calc(var(--stroke-width) * -1);
+}
+
+/* --- SVG RESPONSIVO --- */
+.dashboard-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: visible;
+    /* Evita que se corten los bordes */
+}
+
+.dashboard-bg path {
+    stroke: var(--color-box-lines);
+    stroke-width: var(--stroke-width);
+    fill: none;
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* --- ÁREA DE BOLAS --- */
+.box-area {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /* z-index removed to avoid trapping balls in column stacking context */
+}
+
+/* --- BOLAS --- */
+.ball {
+    position: absolute;
+    width: 12.1%;
+    /* 10% más grande (11 * 1.1) */
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    z-index: 10;
+    cursor: pointer;
+    touch-action: none;
+    will-change: transform;
+    /* Optimización de rendimiento */
+    transition: transform 0.1s, opacity 0.3s;
+    /* Agregado transición de opacidad */
+    opacity: 0;
+    /* Oculto inicialmente */
+
+    /* CAMBIO: Usar el color gris oscuro para el borde de las bolas */
+    border: var(--ball-stroke-width) solid var(--color-stroke-elements);
+    box-sizing: border-box;
+}
+
+.ball:active {
+    cursor: grabbing;
+    z-index: 1000;
+    transform: scale(1.1);
+}
+
+.yellow {
+    background-color: var(--color-yellow);
+}
+
+.red {
+    background-color: var(--color-red);
+}
+
+.green {
+    background-color: var(--color-green);
+}
+
+/* --- POSICIONES INICIALES --- */
+.col-1 .b1 {
+    top: 25%;
+    left: 40%;
+}
+
+.col-1 .b2 {
+    top: 45%;
+    left: 30%;
+}
+
+.col-1 .b3 {
+    top: 40%;
+    left: 60%;
+}
+
+.col-1 .b4 {
+    top: 65%;
+    left: 35%;
+}
+
+.col-1 .b5 {
+    top: 60%;
+    left: 55%;
+}
+
+.col-1 .b6 {
+    top: 75%;
+    left: 50%;
+}
+
+.col-2 .b1 {
+    top: 25%;
+    left: 45%;
+}
+
+.col-2 .b2 {
+    top: 50%;
+    left: 35%;
+}
+
+.col-2 .b3 {
+    top: 60%;
+    left: 55%;
+}
+
+.col-2 .b4 {
+    top: 75%;
+    left: 40%;
+}
+
+.col-3 .b1 {
+    top: 45%;
+    left: 20%;
+}
+
+.col-3 .b2 {
+    top: 45%;
+    left: 45%;
+}
+
+.col-3 .b3 {
+    top: 65%;
+    left: 25%;
+}
+
+/* --- HEADER STYLES --- */
+.task-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    /* Ancho completo */
+    max-width: none;
+    /* Sin límite de ancho */
+    border: none;
+    border-bottom: 1.5px solid #000;
+    /* Solo borde inferior */
+    padding: 12px 20px;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: #000;
+    margin: 0;
+    /* Sin márgenes */
+    background-color: white;
+    position: fixed;
+    /* Fija el elemento en la parte superior */
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-icon {
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+}
+
+.date-section {
+    text-align: right;
+    text-transform: lowercase;
+    /* Estilo visual */
+}
+
+/* --- ESTILOS DEL MODAL MINIMALISTA --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    /* Fondo transparente total */
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    /* backdrop-filter removed */
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+/* Contenedor Principal (User's .card mapped to .task-card) */
+.task-card {
+    width: 90%;
+    max-width: 600px;
+    /* Revertido a normal */
+    border: 1.5px solid black;
+    background-color: white;
+    color: black;
+    display: block;
+    /* Revertido a block */
+    box-shadow: none;
+    /* Eliminada sombra */
+}
+
+/* Encabezado Negro */
+.header {
+    background-color: black;
+    color: white;
+    padding: 12px 15px;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    display: flex;
+    /* Alineación horizontal */
+    justify-content: space-between;
+    /* Título a la izq, botón a la der */
+    align-items: center;
+}
+
+/* Subtítulo (Extracción...) */
+.subheader {
+    padding: 12px 15px;
+    font-size: 16px;
+    border-bottom: 1.5px solid black;
+}
+
+/* Filas de contenido (Descripción y Cierre) */
+.row {
+    display: flex;
+    border-bottom: 1.5px solid black;
+}
+
+
+/* Barra lateral negra con texto vertical */
+.label-sidebar {
+    background-color: black;
+    color: white;
+    width: 40px;
+    /* Ancho fijo */
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Truco para texto vertical de abajo hacia arriba */
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 0;
+}
+
+/* Contenido a la derecha de la barra negra */
+.content {
+    padding: 15px;
+    font-size: 15px;
+    line-height: 1.4;
+    flex-grow: 1;
+    white-space: normal;
+    /* Normal para HTML renderizado */
+    position: relative;
+    /* Para posicionar el botón Leer más */
+    user-select: text;
+    /* Permitir selección de texto */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Clase para truncar el contenido en la vista previa */
+.content.truncated {
+    max-height: 150px;
+    /* Altura reducida */
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0;
+    /* Eliminar margen extra */
+    padding-bottom: 30px;
+    /* Espacio para el botón si es necesario, o dejar que el botón flote */
+}
+
+/* Estilos para Markdown dentro de .content */
+.content h1 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.content h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.content h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+.content ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.content li {
+    margin-bottom: 5px;
+}
+
+.content strong {
+    font-weight: bold;
+}
+
+.content p {
+    margin-bottom: 8px;
+    /* Reducido de 10px */
+    line-height: 1.5;
+    /* Asegurar interlineado correcto */
+}
+
+/* Botón Leer más */
+.read-more-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    /* Fondo blanco */
+    border: 1.5px solid #000;
+    /* Borde negro */
+    border-bottom: none;
+    /* Parece estar pegado al borde inferior */
+    border-right: none;
+    /* Pegado a la derecha */
+    color: #000;
+    padding: 5px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 20;
+    font-weight: normal;
+    text-decoration: underline;
+    /* Texto subrayado */
+    display: none;
+}
+
+.read-more-btn:hover {
+    background-color: #dcdcdc;
+}
+
+/* Botón Cerrar Pantalla Completa */
+.close-fullscreen-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: auto;
+    /* Empuja a la derecha si está en flex */
+}
+
+/* Modo Pantalla Completa */
+.task-card.full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    border: none;
+    z-index: 10000;
+    margin: 0;
+    border-radius: 0;
+    overflow-y: auto;
+    /* Permitir scroll en toda la tarjeta */
+    display: flex;
+    flex-direction: column;
+}
+
+.task-card.full-screen .content {
+    overflow: visible;
+    /* El scroll lo maneja el contenedor padre */
+    max-height: none;
+    /* Quitar límites de altura */
+    flex-grow: 1;
+    display: block;
+    /* Reset display for full screen */
+    -webkit-line-clamp: unset;
+}
+
+/* Clase para truncar el contenido en la vista previa */
+.content.truncated {
+    max-height: 150px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0;
+    padding-bottom: 30px;
+}
+
+/* Footer (Enlaces) */
+.footer {
+    padding: 12px 15px;
+    display: flex;
+    gap: 15px;
+}
+
+.footer a {
+    color: #888;
+    /* Color grisáceo similar a la imagen */
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-size: 15px;
+}
+
+.footer a:hover {
+    color: black;
+}
+
+@media (max-width: 600px) {
+    .task-card {
+        width: 95%;
+    }
+}
+
+/* Sidebar más estrecho en móvil */
+
+/* --- CLASE PARA MOSTRAR BOLAS --- */
+.ball.loaded {
+    opacity: 1;
+}
+
+/* --- BOTÓN BORRAR (DEL) --- */
+.del-btn {
+    /* Tamaño base */
+    width: 60px;
+    /* Ancho fijo */
+    height: 20px;
+    /* Altura reducida (efecto oculto) */
+
+    /* Posicionamiento fijo - Pegado a la esquina */
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 1000;
+
+    /* Estilo */
+    border: 1.5px solid black;
+    /* Mismo grosor que el header */
+    border-right: none;
+    /* Pegado al borde */
+    border-bottom: none;
+    /* Pegado al borde */
+    background-color: white;
+
+    /* Ocultar contenido que se salga */
+    overflow: hidden;
+
+    /* Centrado del contenido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Tipografía */
+    font-size: 30px;
+    line-height: 1;
+
+    /* TEXTO INVISIBLE AL INICIO */
+    color: transparent;
+
+    padding: 0;
+    padding-bottom: 5px;
+    cursor: pointer;
+
+    font-family: "Segoe UI Symbol", "Arial Unicode MS", "Noto Sans Symbols", sans-serif;
+
+    /* Transiciones sincronizadas */
+    transition:
+        height 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+        color 0.2s ease,
+        background-color 0.2s ease,
+        padding-bottom 0.2s ease;
+}
+
+/* Efecto Hover */
+.del-btn:hover {
+    height: 70px;
+    /* Altura final desplegada */
+
+    /* REVELAR CONTENIDO */
+    color: white;
+    background-color: black;
+    padding-bottom: 30px;
+    /* Ajuste para centrar visualmente */
+}
+
+/* --- BOTÓN AGREGAR (+) --- */
+.add-btn {
+    /* Mismas dimensiones y posición base que del-btn */
+    width: 60px;
+    height: 20px;
+    position: fixed;
+    bottom: 0;
+    right: 60px;
+    /* Desplazado a la izquierda del botón borrar */
+    z-index: 1000;
+
+    /* Estilo idéntico */
+    border: 1.5px solid black;
+    border-right: none;
+    /* El borde izquierdo del del-btn actúa como separador si se tocan, 
+       pero para asegurar consistencia visual si del-btn tiene borde izquierdo, 
+       este no necesita borde derecho. */
+    border-bottom: none;
+    background-color: white;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Tipografía */
+    font-size: 30px;
+    line-height: 1;
+    color: transparent;
+    padding: 0;
+    padding-bottom: 5px;
+    cursor: pointer;
+    font-family: "Segoe UI Symbol", "Arial Unicode MS", "Noto Sans Symbols", sans-serif;
+
+    transition:
+        height 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+        color 0.2s ease,
+        background-color 0.2s ease,
+        padding-bottom 0.2s ease;
+}
+
+.add-btn:hover {
+    height: 70px;
+    color: white;
+    background-color: black;
+    padding-bottom: 30px;
+}
+
+/* --- BOTÓN INFO (☺) --- */
+.info-btn {
+    /* Mismas dimensiones y estilo base */
+    width: 60px;
+    height: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    /* Pegado a la izquierda */
+    z-index: 1000;
+
+    border: 1.5px solid black;
+    border-left: none;
+    /* Pegado al borde */
+    border-bottom: none;
+    background-color: white;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 30px;
+    line-height: 1;
+    color: transparent;
+    padding: 0;
+    padding-bottom: 5px;
+    cursor: pointer;
+    font-family: "Segoe UI Symbol", "Arial Unicode MS", "Noto Sans Symbols", sans-serif;
+
+    transition:
+        height 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+        color 0.2s ease,
+        background-color 0.2s ease,
+        padding-bottom 0.2s ease;
+}
+
+.info-btn:hover {
+    height: 70px;
+    color: white;
+    background-color: black;
+    padding-bottom: 30px;
+}
+
+.info-btn:active {
+    background-color: #333;
+}
+
+/* Efecto Click (Active) */
+.del-btn:active {
+    /* Solo escala, sin translate porque bottom:0 fija la base */
+    background-color: #333;
+}
+
+/* --- EDITABLE FIELDS --- */
+[contenteditable="true"] {
+    outline: none;
+    cursor: text;
+}
+
+[contenteditable="true"]:focus {
+    background-color: rgba(0, 0, 0, 0.05);
+    /* Sutil fondo gris al editar */
+}
+
+#modalSubject {
+    display: inline-block;
+    min-width: 100px;
+    min-height: 1em;
+}
+
+#modalTitle {
+    min-height: 1.2em;
+}
+
+#modalDescription {
+    display: block;
+    min-height: 100px;
+    /* Altura mínima para facilitar clic */
+    width: 100%;
+}
+
+/* --- FOOTER NUEVA TAREA --- */
+.footer-new-task {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    /* Permitir wrap en móviles si es necesario */
+}
+
+.color-label {
+    background-color: black;
+    color: white;
+    padding: 12px 15px;
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+}
+
+.color-options {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* Alineado a la izquierda */
+    gap: 20px;
+    padding: 12px 15px;
+    background-color: white;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+}
+
+.radio-label:hover {
+    opacity: 0.7;
+}
+
+/* Custom Checkbox Style (from user snippet adapted) */
+.custom-checkbox {
+    appearance: none;
+    background-color: #fff;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid black;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    border-radius: 0;
+    /* Cuadrado */
+}
+
+.custom-checkbox::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    transform: scale(0);
+    background-color: black;
+    transform-origin: center;
+    /* Simple square fill instead of complex polygon for cleaner look at small size, 
+       or use the polygon if strictly requested. Let's use the polygon for fidelity. */
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    background-color: black;
+    /* Ensure it's black */
+    box-shadow: inset 1em 1em black;
+}
+
+.custom-checkbox:checked::before {
+    transform: scale(1);
+}
+
+/* --- DATE INPUT STYLING --- */
+
+
+::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+}
+
+.send-btn {
+    background-color: black;
+    color: white;
+    border: none;
+    border-left: 1.5px solid black;
+    /* Separador si fuera necesario, pero ya es negro */
+    padding: 0 25px;
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.send-btn:hover {
+    background-color: #333;
+}
+
+.send-btn:active {
+    background-color: #333;
+}
+
+/* Base style for mobile info card - hidden by default on desktop */
+#infoCardMobile {
+    display: none;
+}
+
+#mobile-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: none;
+    pointer-events: auto;
+    /* Ensure canvas receives events */
+}
+
+@media (max-width: 768px) {
+
+    /* Hide main application elements */
+    .task-bar,
+    .dashboard,
+    .add-btn,
+    .del-btn,
+    .info-btn {
+        display: none !important;
+    }
+
+    /* Force modal overlay to be visible but transparent for canvas interaction */
+    #modalOverlay {
+        display: flex !important;
+        background-color: transparent !important;
+        z-index: 100;
+        /* Above canvas */
+        pointer-events: none;
+        /* Let touches pass through to canvas */
+    }
+
+    /* Hide the task card (edit/view task) and desktop info card */
+    #taskCard,
+    #infoCard {
+        display: none !important;
+    }
+
+    /* Force mobile info card to be visible and interactive */
+    #infoCardMobile {
+        display: block !important;
+        width: 90%;
+        max-width: 400px;
+        pointer-events: auto;
+        /* Re-enable interaction for the card */
+        z-index: 101;
+    }
+
+    #mobile-canvas {
+        display: block;
+    }
+}
+
+@media (max-width: 500px) {
+    .footer-new-task {
+        flex-direction: column;
+    }
+
+    .color-label,
+    .send-btn {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .color-options {
+        justify-content: center;
+        border-top: 1.5px solid black;
+        border-bottom: 1.5px solid black;
+    }
+}
+
+/* --- DATE INPUT --- */
+.date-input {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    padding: 5px;
+    border: 1.5px solid black;
+    background-color: white;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    accent-color: black;
+}

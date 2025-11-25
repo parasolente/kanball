@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanball</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <canvas id="mobile-canvas"></canvas>
+    <div class="task-bar">
+        <div class="left-section">
+            <div class="status-icon">↻</div>
+            <span id="taskCount">0 Tareas Pendientes</span>
+        </div>
+        <div class="date-section" id="currentDate">
+            Cargando fecha...
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <svg class="dashboard-bg" viewBox="0 0 6924 4428" fill="none" xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none">
+            <path vector-effect="non-scaling-stroke"
+                d="M2518.5 4.5H102.5C48.3761 4.5 4.5 48.3762 4.5 102.5V4325.5C4.5 4379.62 48.376 4423.5 102.5 4423.5H2518.5M312 4090H2207V3744.5M312 4090V337.5M312 4090L657.5 3744.5M2207 3744.5V683M2207 3744.5H657.5M2207 683V337.5H312M2207 683H657.5M312 337.5L657.5 683M657.5 3744.5V683M2205.5 4.5H4710.5M4710.5 4423.5H2205.5M4410.5 4.5H6821C6875.12 4.5 6919 48.3761 6919 102.5V4325.5C6919 4379.62 6875.12 4423.5 6821 4423.5H4410.5M6613 4090H4718V3744.5M6613 4090V337.5M6613 4090L6267.5 3744.5M6613 337.5H4718V683M6613 337.5L6267.5 683M4718 683V3744.5M4718 683H6267.5M4718 3744.5H6267.5M6267.5 3744.5V683M4405 4090V337.5M4405 4090H2519M4405 4090L4205.53 3744.5M4405 337.5H2519M4405 337.5L4205.53 683M2519 337.5V4090M2519 337.5L2718.47 683M2519 4090L2718.47 3744.5M2718.47 3744.5H4205.53M2718.47 3744.5V683M4205.53 3744.5V683M2718.47 683H4205.53" />
+        </svg>
+
+        <div class="column col-1" id="col-1">
+            <div class="box-area">
+            </div>
+        </div>
+
+        <div class="column col-2" id="col-2">
+            <div class="box-area">
+            </div>
+        </div>
+
+        <div class="column col-3" id="col-3">
+            <div class="box-area">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="task-card" id="taskCard">
+            <div class="header" id="modalHeader">
+                <span id="modalSubject"></span>
+                <button id="closeFullScreenBtn" class="close-fullscreen-btn" style="display: none;">✕</button>
+            </div>
+
+            <div class="subheader" id="modalTitle"></div>
+
+            <div class="row">
+                <div class="label-sidebar">DESCRIPCIÓN</div>
+                <div class="content" id="modalDescriptionContainer">
+                    <span id="modalDescription">
+                    </span>
+                    <button id="readMoreBtn" class="read-more-btn" style="display: none;">Leer más...</button>
+                    <button id="editBtn" class="read-more-btn" style="display: block;">Editar...</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="label-sidebar">CIERRE</div>
+                <div class="content">
+                    <span id="modalDateText">Sin fecha</span>
+                    <div id="modalDateInputs" style="display: none; gap: 10px; display: flex;">
+                        <input type="date" id="modalDateInputDate" class="date-input" style="flex: 2;">
+                        <input type="time" id="modalDateInputTime" class="date-input" style="flex: 1;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer" id="viewTaskFooter">
+                <a href="#">Ver archivo ↗</a>
+                <a href="#">Tarea ↗</a>
+            </div>
+
+            <div class="footer-new-task" id="newTaskFooter" style="display: none;">
+                <div class="color-label">COLOR</div>
+                <div class="color-options">
+                    <label class="radio-label">
+                        <input type="radio" name="color" value="Rojo" class="custom-checkbox">
+                        <span>Rojo</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="color" value="Amarillo" class="custom-checkbox">
+                        <span>Amarillo</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="color" value="Verde" class="custom-checkbox">
+                        <span>Verde</span>
+                    </label>
+                </div>
+                <button class="send-btn" id="sendBtn">ENVIAR</button>
+            </div>
+        </div>
+
+        <div class="task-card" id="infoCard" style="display: none;">
+            <div class="header" style="padding-left: 6.5px;">
+                <div style="display: flex; align-items: center; gap: 1px;">
+                    <span style="font-size: 1.5em; line-height: 0.8;">☻</span>
+                    <span style="text-transform: none; position: relative; top: 1px;">Kanball v1</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="label-sidebar">DESCRIPCIÓN</div>
+                <div class="content">
+                    <p>Kanball es una experiencia abstractográfica de Kanban.</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <a href="https://www.instagram.com/para.solente/" target="_blank">Contacto ↗</a>
+            </div>
+        </div>
+
+        <div class="task-card" id="infoCardMobile" style="display: none;">
+            <div class="header" style="padding-left: 6.5px;">
+                <div style="display: flex; align-items: center; gap: 1px;">
+                    <span style="font-size: 1.5em; line-height: 0.8;">☻</span>
+                    <span style="text-transform: none; position: relative; top: 1px;">Kanball</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="label-sidebar">DESCRIPCIÓN</div>
+                <div class="content">
+                    <p>Kanball es una experiencia abstractográfica de Kanban, disponible solo para computadoras.</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <a href="https://www.instagram.com/para.solente/" target="_blank">Contacto ↗</a>
+            </div>
+        </div>
+    </div>
+
+    <button class="add-btn" id="addBtn" aria-label="Agregar">
+        +
+    </button>
+
+    <button class="del-btn" id="delBtn" aria-label="Borrar">
+        ␡
+    </button>
+
+    <button class="info-btn" id="infoBtn" aria-label="Información">
+        ☻
+    </button>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
